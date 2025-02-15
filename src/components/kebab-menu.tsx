@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react";
 
 interface Props {
   type: "보드" | "할 일";
-  onEditClick: () => void;
+  onEdit: () => void;
+  onRemove: () => void;
 }
 
-export default function KebabMenu({ type, onEditClick }: Props) {
+export default function KebabMenu({ type, onEdit, onRemove }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -30,12 +31,15 @@ export default function KebabMenu({ type, onEditClick }: Props) {
           className={`absolute right-0 top-6 z-10 overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg ${type === "보드" ? "w-[115px]" : "w-[93px]"}`}
         >
           <button
-            onClick={onEditClick}
+            onClick={onEdit}
             className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100"
           >
             {type} {type === "보드" && "이름"} 수정
           </button>
-          <button className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-red-100">
+          <button
+            onClick={onRemove}
+            className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-red-100"
+          >
             {type} 삭제
           </button>
         </div>

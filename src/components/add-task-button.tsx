@@ -1,13 +1,21 @@
+import { useKanbanStore } from "@/store/use-kanban-store";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
-export default function AddTaskButton() {
+interface Props {
+  boardId: string;
+}
+
+export default function AddTaskButton({ boardId }: Props) {
+  const { addTask } = useKanbanStore();
+
   const [isEditing, setIsEditing] = useState(false);
   const [task, setTask] = useState("");
 
-  const handleAddClick = () => setIsEditing(true);
-  const handleCompleteClick = () => {
-    console.log("할일 추가: ", task);
+  const handleEdit = () => setIsEditing(true);
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    addTask(boardId, task);
     setTask("");
     setIsEditing(false);
   };
@@ -15,7 +23,7 @@ export default function AddTaskButton() {
   return (
     <>
       {isEditing ? (
-        <div className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <textarea
             autoFocus
             value={task}
@@ -24,7 +32,6 @@ export default function AddTaskButton() {
             placeholder="할 일을 입력하세요."
           />
           <button
-            onClick={handleCompleteClick}
             disabled={!task.trim()}
             className={`h-10 w-full rounded-md transition ${
               task.trim()
@@ -34,10 +41,10 @@ export default function AddTaskButton() {
           >
             완료
           </button>
-        </div>
+        </form>
       ) : (
         <button
-          onClick={handleAddClick}
+          onClick={handleEdit}
           className="flex h-10 w-full items-center justify-center rounded-md border border-gray-300 bg-white"
         >
           <Plus className="size-5 stroke-green-700" />
