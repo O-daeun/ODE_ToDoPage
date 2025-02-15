@@ -21,7 +21,11 @@ export default function Task({ boardId, task }: Props) {
     setIsEditing(false);
   };
   const handleRemove = () => {
-    removeTask(boardId, task.id);
+    const isConfirmed = window.confirm("정말 이 할 일을 삭제하시겠습니까?");
+
+    if (isConfirmed) {
+      removeTask(boardId, task.id);
+    }
   };
 
   return (

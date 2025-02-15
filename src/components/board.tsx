@@ -21,7 +21,13 @@ export default function Board({ board }: Props) {
     setIsEditing(false);
   };
   const handleRemove = () => {
-    removeBoard(board.id);
+    const isConfirmed = window.confirm(
+      `정말 보드 "${boardName}"을 삭제하시겠습니까?`,
+    );
+
+    if (isConfirmed) {
+      removeBoard(board.id);
+    }
   };
 
   return (
