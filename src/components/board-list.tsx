@@ -6,7 +6,6 @@ import Board from "./board";
 
 export default function BoardList() {
   const { boards } = useKanbanStore();
-  console.log(boards);
 
   return (
     <section className="flex w-max gap-5 p-10">

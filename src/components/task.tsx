@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function Task({ boardId, task }: Props) {
-  const { removeTask } = useKanbanStore();
+  const { updateTask, removeTask } = useKanbanStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [taskContent, setTaskContent] = useState(task.content);
@@ -17,7 +17,7 @@ export default function Task({ boardId, task }: Props) {
   const handleEdit = () => setIsEditing(true);
   const handleSave = (e: FormEvent) => {
     e.preventDefault();
-
+    updateTask(boardId, task.id, taskContent);
     setIsEditing(false);
   };
   const handleRemove = () => {
