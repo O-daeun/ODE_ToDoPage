@@ -1,7 +1,12 @@
 import { EllipsisVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export default function KebabMenu() {
+interface Props {
+  type: "보드" | "할 일";
+  onEditClick: () => void;
+}
+
+export default function KebabMenu({ type, onEditClick }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -16,17 +21,22 @@ export default function KebabMenu() {
   }, []);
 
   return (
-    <div className="relative z-10 flex items-center" ref={menuRef}>
+    <div className="relative flex items-center" ref={menuRef}>
       <button onClick={() => setIsOpen((prev) => !prev)}>
         <EllipsisVertical className="size-5 stroke-gray-400" />
       </button>
       {isOpen && (
-        <div className="absolute right-0 top-6 w-32 rounded-md border border-gray-300 bg-white shadow-lg">
-          <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100">
-            보드 이름 수정
+        <div
+          className={`absolute right-0 top-6 z-10 overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg ${type === "보드" ? "w-[115px]" : "w-[93px]"}`}
+        >
+          <button
+            onClick={onEditClick}
+            className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100"
+          >
+            {type} {type === "보드" && "이름"} 수정
           </button>
-          <button className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-100">
-            보드 삭제
+          <button className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-red-100">
+            {type} 삭제
           </button>
         </div>
       )}
