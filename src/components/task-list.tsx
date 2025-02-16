@@ -9,7 +9,10 @@ interface Props {
 export default function TaskList({ boardId, tasks }: Props) {
   if (!tasks.length) return;
   return (
-    <ul className="flex flex-col gap-2">
+    <ul
+      onPointerDown={(e) => e.stopPropagation()}
+      className="flex flex-col gap-2"
+    >
       {tasks.map((task) => (
         <Task key={task.id} boardId={boardId} task={task} />
       ))}

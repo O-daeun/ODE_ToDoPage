@@ -34,7 +34,9 @@ export default function Board({ board }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [boardName, setBoardName] = useState(board.title);
 
-  const handleEdit = () => setIsEditing(true);
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     updateBoardTitle(board.id, boardName);
@@ -55,13 +57,18 @@ export default function Board({ board }: Props) {
       <div
         style={style}
         {...attributes}
+        {...listeners}
         className="group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 hover:bg-[#e9f6ee]"
       >
-        <div {...listeners} className="flex items-center justify-between">
+        <div
+          
+          className="flex items-center justify-between"
+        >
           <h2 className="ml-3 flex items-center gap-2">
             <div className="size-2 rounded-full bg-green-700" />
             {isEditing ? (
               <form
+              onPointerDown={(e) => e.stopPropagation()}
                 onSubmit={handleSubmit}
                 className="flex w-full items-center gap-2"
               >

@@ -22,7 +22,11 @@ export default function KebabMenu({ type, onEdit, onRemove }: Props) {
   }, []);
 
   return (
-    <div className="relative flex items-center" ref={menuRef}>
+    <div
+      onPointerDown={(e) => e.stopPropagation()}
+      className="relative flex items-center"
+      ref={menuRef}
+    >
       <button onClick={() => setIsOpen((prev) => !prev)}>
         <EllipsisVertical className="size-5 stroke-gray-400" />
       </button>

@@ -21,7 +21,7 @@ export default function AddTaskButton({ boardId }: Props) {
   };
 
   return (
-    <>
+    <div onPointerDown={(e) => e.stopPropagation()}>
       {isEditing ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <textarea
@@ -50,6 +50,6 @@ export default function AddTaskButton({ boardId }: Props) {
           <Plus className="size-5 stroke-green-700" />
         </button>
       )}
-    </>
+    </div>
   );
 }
