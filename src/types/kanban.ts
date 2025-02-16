@@ -11,6 +11,7 @@ export type Board = {
 
 export type KanbanStore = {
   boards: Board[];
+  setBoards: (boards: Board[]) => void;
   addBoard: (title: string) => void;
   removeBoard: (id: string) => void;
   updateBoardTitle: (id: string, title: string) => void;

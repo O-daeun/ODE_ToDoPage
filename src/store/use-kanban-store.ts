@@ -7,6 +7,8 @@ export const useKanbanStore = create<KanbanStore>()(
     (set, get) => ({
       boards: [],
 
+      setBoards: (boards) => set({ boards }),
+
       addBoard: (title) => {
         const newBoard: Board = {
           id: crypto.randomUUID(),
