@@ -12,8 +12,8 @@ export default function KebabMenu({ type, onEdit, onRemove }: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -32,7 +32,7 @@ export default function KebabMenu({ type, onEdit, onRemove }: Props) {
       </button>
       {isOpen && (
         <div
-          className={`absolute right-0 top-6 z-10 overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg ${type === "보드" ? "w-[115px]" : "w-[93px]"}`}
+          className={`absolute right-0 top-6 z-[999] overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg ${type === "보드" ? "w-[115px]" : "w-[93px]"}`}
         >
           <button
             onClick={onEdit}

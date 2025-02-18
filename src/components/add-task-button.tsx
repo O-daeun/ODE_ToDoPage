@@ -28,6 +28,7 @@ export default function AddTaskButton({ boardId }: Props) {
             autoFocus
             value={task}
             onChange={(e) => setTask(e.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             className="h-20 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-green-600"
             placeholder="할 일을 입력하세요."
           />

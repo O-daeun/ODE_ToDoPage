@@ -14,7 +14,7 @@ export default function Task({ boardId, task }: Props) {
   const {
     attributes,
     listeners,
-    setNodeRef,
+    setNodeRef: setListRef,
     transform,
     transition,
     isDragging,
@@ -27,7 +27,7 @@ export default function Task({ boardId, task }: Props) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 100 : 1,
+    // zIndex: isDragging ? 10 : 1,
     cursor: isDragging ? "grabbing" : "grab",
   };
 
@@ -47,30 +47,35 @@ export default function Task({ boardId, task }: Props) {
 
   return (
     <li
-      ref={setNodeRef} // 요소 참조 추가
-      style={style} // 스타일 적용
-      {...attributes} // DnD 속성 적용
-      {...listeners} // 드래그 이벤트 적용
+      ref={setListRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       className={`relative rounded-md border border-gray-300 bg-white py-3 ${isEditing ? "px-4" : "pl-4 pr-6"}`}
     >
       {isEditing ? (
-        <form onSubmit={handleSave} className="flex flex-col gap-2">
+        <form
+          onPointerDown={(e) => e.stopPropagation()}
+          onSubmit={handleSave}
+          className="flex flex-col gap-2"
+        >
           <textarea
             autoFocus
             value={taskContent}
             onChange={(e) => setTaskContent(e.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
             className="h-20 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-green-600"
           />
-          <button
-            onClick={handleSave}
-            className="rounded-md bg-green-700 px-2 py-1 text-sm text-white hover:bg-green-600"
-          >
+          <button className="rounded-md bg-green-700 px-2 py-1 text-sm text-white hover:bg-green-600">
             완료
           </button>
         </form>
       ) : (
         <>
-          <div className="absolute right-2 top-[14px]">
+          <div
+            onPointerDown={(e) => e.stopPropagation()}
+            className="absolute right-2 top-[14px]"
+          >
             <KebabMenu
               type="할 일"
               onEdit={handleEdit}
