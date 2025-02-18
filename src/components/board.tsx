@@ -9,9 +9,10 @@ import TaskList from "./task-list";
 
 interface Props {
   board: BoardType;
+  isDraggingOverlay?: boolean;
 }
 
-export default function Board({ board }: Props) {
+export default function Board({ board, isDraggingOverlay }: Props) {
   const {
     attributes,
     listeners,
@@ -21,14 +22,10 @@ export default function Board({ board }: Props) {
     isDragging,
   } = useSortable({
     id: board.id,
+    data: {
+      type: "board",
+    },
   });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    zIndex: isDragging ? 10 : 1,
-    cursor: isDragging ? "grabbing" : "grab",
-  };
 
   const { updateBoardTitle, removeBoard } = useKanbanStore();
   const [isEditing, setIsEditing] = useState(false);
@@ -37,11 +34,13 @@ export default function Board({ board }: Props) {
   const handleEdit = () => {
     setIsEditing(true);
   };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     updateBoardTitle(board.id, boardName);
     setIsEditing(false);
   };
+
   const handleRemove = () => {
     const isConfirmed = window.confirm(
       `정말 보드 "${boardName}"을 삭제하시겠습니까?`,
@@ -52,12 +51,20 @@ export default function Board({ board }: Props) {
     }
   };
 
+  const style = {
+    transform: isDraggingOverlay
+      ? undefined
+      : CSS.Transform.toString(transform),
+    transition,
+    cursor: isDragging ? "grabbing" : "grab",
+    opacity: isDragging ? 0 : 1,
+  };
+
   return (
-    <article ref={setNodeRef} className="grow">
+    <article ref={isDraggingOverlay ? undefined : setNodeRef} className="grow">
       <div
         style={style}
-        {...attributes}
-        {...listeners}
+        {...(isDraggingOverlay ? {} : { ...attributes, ...listeners })}
         className="group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 duration-200 hover:bg-[#e9f6ee]"
       >
         <div className="flex items-center justify-between">

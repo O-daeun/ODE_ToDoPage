@@ -9,6 +9,6 @@
   font-display: swap;
 }
 
-html,
-body {
+li {
+  list-style: none;
 }

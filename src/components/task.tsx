@@ -8,26 +8,29 @@ import KebabMenu from "./kebab-menu";
 interface Props {
   boardId: string;
   task: TaskType;
+  isDraggingOverlay?: boolean;
 }
 
-export default function Task({ boardId, task }: Props) {
+export default function Task({ boardId, task, isDraggingOverlay }: Props) {
   const {
     attributes,
     listeners,
-    setNodeRef: setListRef,
+    setNodeRef,
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.id, data: { boardId, task } });
+  } = useSortable({ id: task.id, data: { type: "task", boardId, task } });
   const { updateTask, removeTask } = useKanbanStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [taskContent, setTaskContent] = useState(task.content);
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: isDraggingOverlay
+      ? undefined
+      : CSS.Transform.toString(transform),
     transition,
-    // zIndex: isDragging ? 10 : 1,
+    opacity: isDragging ? 0 : 1,
     cursor: isDragging ? "grabbing" : "grab",
   };
 
@@ -47,7 +50,7 @@ export default function Task({ boardId, task }: Props) {
 
   return (
     <li
-      ref={setListRef}
+      ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
