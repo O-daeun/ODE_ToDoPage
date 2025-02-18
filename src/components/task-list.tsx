@@ -12,12 +12,15 @@ interface Props {
 }
 
 export default function TaskList({ boardId, tasks, isOverBoard }: Props) {
-  if (!tasks.length) return;
+  if (!tasks.length) return null;
+
+  const taskIds = tasks.map((task) => task.id);
+
   return (
-    <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
+    <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
       <ul
         onPointerDown={(e) => e.stopPropagation()}
-        className={`flex flex-col gap-2 transition-all duration-200 ${isOverBoard ? "gap-4" : "gap-2"} `}
+        className={`flex flex-col transition-all duration-200 ${isOverBoard ? "gap-4" : "gap-2"}`}
         data-board-id={boardId}
       >
         {tasks.map((task) => (
