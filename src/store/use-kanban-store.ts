@@ -1,4 +1,5 @@
 import { Board, KanbanStore } from "@/types/kanban";
+import { arrayMove } from "@dnd-kit/sortable";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -27,6 +28,38 @@ export const useKanbanStore = create<KanbanStore>()(
           boards: get().boards.map((board) =>
             board.id === id ? { ...board, title } : board,
           ),
+        });
+      },
+
+      moveTask: (fromBoardId, toBoardId, taskId, overId) => {
+        set((state) => {
+          let newBoards = [...state.boards];
+          let fromBoardIndex = newBoards.findIndex((b) => b.id === fromBoardId);
+          let toBoardIndex = newBoards.findIndex((b) => b.id === toBoardId);
+
+          if (fromBoardIndex === -1 || toBoardIndex === -1) return state;
+
+          let fromBoard = newBoards[fromBoardIndex];
+          let toBoard = newBoards[toBoardIndex];
+
+          let oldIndex = fromBoard.tasks.findIndex((t) => t.id === taskId);
+          if (oldIndex === -1) return state;
+
+          let task = fromBoard.tasks[oldIndex];
+
+          if (fromBoardId === toBoardId) {
+            let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
+            toBoard.tasks = arrayMove(toBoard.tasks, oldIndex, newIndex);
+          } else {
+            let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
+            toBoard.tasks.splice(
+              newIndex !== -1 ? newIndex : toBoard.tasks.length,
+              0,
+              task,
+            );
+          }
+
+          return { boards: newBoards };
         });
       },
 

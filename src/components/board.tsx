@@ -58,17 +58,14 @@ export default function Board({ board }: Props) {
         style={style}
         {...attributes}
         {...listeners}
-        className="group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 hover:bg-[#e9f6ee]"
+        className="group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 duration-200 hover:bg-[#e9f6ee]"
       >
-        <div
-          
-          className="flex items-center justify-between"
-        >
+        <div className="flex items-center justify-between">
           <h2 className="ml-3 flex items-center gap-2">
             <div className="size-2 rounded-full bg-green-700" />
             {isEditing ? (
               <form
-              onPointerDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
                 onSubmit={handleSubmit}
                 className="flex w-full items-center gap-2"
               >

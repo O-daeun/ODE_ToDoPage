@@ -3,6 +3,7 @@
 import { useKanbanStore } from "@/store/use-kanban-store";
 import {
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
@@ -25,8 +26,8 @@ export default function BoardList() {
     useSensor(KeyboardSensor),
   );
 
-  const handleDragEnd = (e: any) => {
-    const { active, over } = e;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
     if (!over || active.id === over.id) return;
 
     const oldIndex = boards.findIndex((b) => b.id === active.id);
