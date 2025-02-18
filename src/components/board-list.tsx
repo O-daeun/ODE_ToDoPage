@@ -4,20 +4,24 @@ import { useKanbanStore } from "@/store/use-kanban-store";
 import {
   DndContext,
   DragEndEvent,
+  DragOverEvent,
   DragOverlay,
   DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
+  getFirstCollision,
+  pointerWithin,
+  rectIntersection,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
-  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { act, useState } from "react";
+import { useState } from "react";
 import AddBoardButton from "./add-board-button";
 import Board from "./board";
 import Task from "./task";
@@ -26,6 +30,7 @@ export default function BoardList() {
   const { boards, setBoards, moveTask } = useKanbanStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeData, setActiveData] = useState<any>(null);
+  const [overBoardId, setOverBoardId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -42,11 +47,33 @@ export default function BoardList() {
     setActiveData(active.data.current);
   };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const isTask = active.data.current?.type === "task";
+    if (isTask) {
+      const overId = String(over.id);
+      const overBoard = boards.find(
+        (board) =>
+          board.id === overId || board.tasks.some((task) => task.id === overId),
+      );
+      if (overBoard) {
+        setOverBoardId(overBoard.id);
+        const fromBoardId = active.data.current?.boardId;
+        if (fromBoardId !== overBoard.id) {
+          setOverBoardId(overBoard.id);
+        }
+      }
+    }
+  };
+
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) {
       setActiveId(null);
       setActiveData(null);
+      setOverBoardId(null);
       return;
     }
 
@@ -66,6 +93,7 @@ export default function BoardList() {
 
     setActiveId(null);
     setActiveData(null);
+    setOverBoardId(null);
   };
 
   const renderDragOverlay = () => {
@@ -82,10 +110,10 @@ export default function BoardList() {
           </div>
         );
       }
-    } else if (activeData.type === 'board') {
-      const board = boards.find(b => b.id === activeId)
+    } else if (activeData.type === "board") {
+      const board = boards.find((b) => b.id === activeId);
       if (board) {
-        return <Board board={board} isDraggingOverlay />
+        return <Board board={board} isDraggingOverlay />;
       }
     }
 
@@ -96,13 +124,46 @@ export default function BoardList() {
     <DndContext
       sensors={sensors}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
-      collisionDetection={closestCenter}
+      collisionDetection={(args) => {
+        // Task를 드래그할 때
+        if (activeData?.type === "task") {
+          const pointerCollisions = pointerWithin(args);
+          if (!pointerCollisions.length) return [];
+
+          const boardId = getFirstCollision(pointerCollisions, "id");
+          if (boardId) {
+            return rectIntersection({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                (container) => {
+                  return (
+                    container.id === boardId ||
+                    boards
+                      .find((board) => board.id === boardId)
+                      ?.tasks.some((task) => task.id === container.id)
+                  );
+                },
+              ),
+            });
+          }
+        }
+
+        if (activeData?.type === "board") {
+          return rectIntersection(args);
+        }
+        return closestCenter(args);
+      }}
     >
-      <SortableContext items={boards} strategy={verticalListSortingStrategy}>
+      <SortableContext items={boards} strategy={horizontalListSortingStrategy}>
         <section className="flex w-max gap-5 p-10">
           {boards.map((board) => (
-            <Board key={board.id} board={board} />
+            <Board
+              key={board.id}
+              board={board}
+              isOver={overBoardId === board.id}
+            />
           ))}
           <AddBoardButton />
         </section>

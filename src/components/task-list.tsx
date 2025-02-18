@@ -8,15 +8,16 @@ import Task from "./task";
 interface Props {
   boardId: string;
   tasks: TaskType[];
+  isOverBoard?: boolean;
 }
 
-export default function TaskList({ boardId, tasks }: Props) {
+export default function TaskList({ boardId, tasks, isOverBoard }: Props) {
   if (!tasks.length) return;
   return (
     <SortableContext items={tasks} strategy={verticalListSortingStrategy}>
       <ul
         onPointerDown={(e) => e.stopPropagation()}
-        className="flex flex-col gap-2"
+        className={`flex flex-col gap-2 transition-all duration-200 ${isOverBoard ? "gap-4" : "gap-2"} `}
         data-board-id={boardId}
       >
         {tasks.map((task) => (

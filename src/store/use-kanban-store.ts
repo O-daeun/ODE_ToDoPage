@@ -51,13 +51,18 @@ export const useKanbanStore = create<KanbanStore>()(
             let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
             toBoard.tasks = arrayMove(toBoard.tasks, oldIndex, newIndex);
           } else {
-            let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
             fromBoard.tasks = fromBoard.tasks.filter((t) => t.id !== taskId);
-            toBoard.tasks.splice(
-              newIndex !== -1 ? newIndex : toBoard.tasks.length,
-              0,
-              task,
-            );
+
+            if (overId === toBoardId) {
+              toBoard.tasks.unshift(task);
+            } else {
+              let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
+              if (newIndex !== -1) {
+                toBoard.tasks.splice(newIndex, 0, task);
+              } else {
+                toBoard.tasks.push(task);
+              }
+            }
           }
 
           return { boards: newBoards };

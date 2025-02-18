@@ -10,9 +10,10 @@ import TaskList from "./task-list";
 interface Props {
   board: BoardType;
   isDraggingOverlay?: boolean;
+  isOver?: boolean;
 }
 
-export default function Board({ board, isDraggingOverlay }: Props) {
+export default function Board({ board, isDraggingOverlay, isOver }: Props) {
   const {
     attributes,
     listeners,
@@ -65,7 +66,7 @@ export default function Board({ board, isDraggingOverlay }: Props) {
       <div
         style={style}
         {...(isDraggingOverlay ? {} : { ...attributes, ...listeners })}
-        className="group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 duration-200 hover:bg-[#e9f6ee]"
+        className={`group relative flex h-fit w-80 shrink-0 flex-col gap-4 rounded-lg border border-gray-300 bg-gray-100 p-5 duration-200 hover:bg-[#e9f6ee] ${isOver ? "scale-105 transform border-green-500 shadow-lg" : ""} `}
       >
         <div className="flex items-center justify-between">
           <h2 className="ml-3 flex items-center gap-2">
@@ -94,7 +95,7 @@ export default function Board({ board, isDraggingOverlay }: Props) {
           <KebabMenu type="보드" onEdit={handleEdit} onRemove={handleRemove} />
         </div>
         <AddTaskButton boardId={board.id} />
-        <TaskList boardId={board.id} tasks={board.tasks} />
+        <TaskList boardId={board.id} tasks={board.tasks} isOverBoard={isOver} />
       </div>
     </article>
   );
