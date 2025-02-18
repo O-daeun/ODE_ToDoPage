@@ -54,7 +54,7 @@ export const useKanbanStore = create<KanbanStore>()(
             fromBoard.tasks = fromBoard.tasks.filter((t) => t.id !== taskId);
 
             if (overId === toBoardId) {
-              toBoard.tasks.unshift(task);
+              toBoard.tasks.push(task);
             } else {
               let newIndex = toBoard.tasks.findIndex((t) => t.id === overId);
               if (newIndex !== -1) {
